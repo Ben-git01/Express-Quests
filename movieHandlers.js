@@ -28,23 +28,51 @@ const movies = [
 
 const getMovies = (req, res) => {
 
-  database
+  let sql = "select * from movies";
 
-    .query("select * from movies")
+  const sqlValues = [];
+  
+  
+  if (req.query.color != null) {
+  
+    sql += " where color = ?";
+  
+    sqlValues.push(req.query.color);
+  
+  
+    if (req.query.max_duration != null) {
+  
+      sql += " and duration <= ?";
+  
+      sqlValues.push(req.query.max_duration);
+  
+    }
+  
+  } else if (req.query.max_duration != null) {
+  
+    sql += " where duration <= ?";
+  
+    sqlValues.push(req.query.max_duration);
+  
+  }
 
-    .then(([movies]) => {
+database
 
-      res.json(movies);
+.query(sql, sqlValues)
 
-    })
+.then(([movies]) => {
 
-    .catch((err) => {
+  res.json(movies);
 
-      console.error(err);
+})
 
-      res.status(500).send("Error retrieving data from database");
+.catch((err) => {
 
-    });
+  console.error(err);
+
+  res.status(500).send("Error retrieving data from database");
+
+});
 
 };
 
