@@ -6,7 +6,7 @@ app.use(express.json());
 
 
 const port = process.env.APP_PORT ?? 5000;
-
+const { hashPassword } = require("./auth.js");
 const { validateMovie } = require("./movieValidator");
 const { validateUser } = require("./userValidator");
 const welcome = (req, res) => {
@@ -25,9 +25,9 @@ app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 const userHandlers = require("./userHandler")
 app.get("/api/users" , userHandlers.getUsers);
 app.get("/api/users/:id", userHandlers.getUserById);
-app.post("/api/users",validateUser, userHandlers.postUser);
-app.put("/api/users/:id", validateUser,userHandlers.editUser );
-app.delete("/api/users/:id", userHandlers.deleteUser );
+app.post("/api/users",hashPassword,validateUser, userHandlers.postUser);
+app.put("/api/users/:id",hashPassword, validateUser,userHandlers.editUser );
+app.delete("/api/users/:id",hashPassword, userHandlers.deleteUser );
 app.listen(port, (err) => {
   if (err) {
     console.error("Something bad happened");

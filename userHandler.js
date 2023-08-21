@@ -3,7 +3,7 @@ const database = require("./database");
 
   const getUsers = (req, res) => {
 
-    let sql = "select * from users";
+    let sql = "select id,firstname, lastname,email,city,language from users";
 
     const sqlValues = [];
     
@@ -58,13 +58,13 @@ const getUserById = (req, res) => {
   
     database
   
-      .query("select * from users where id = ?", [id])
+      .query("select id,firstname, lastname,email,city,language from users where id = ?", [id])
   
       .then(([users]) => {
   
         if (users[0] != null) {
   
-          res.json(users[0]);
+          res.status(200).json(users[0]);
   
         } else {
   
@@ -85,21 +85,21 @@ const getUserById = (req, res) => {
   };
 
   const postUser = (req, res) => {
-    const { firstname, lastname, email, city, language } = req.body;
+    const { firstname, lastname, email, city, language , hashedPassword} = req.body;
     console.log("Data received from the request body:");
   console.log("firstname:", firstname);
   console.log("lastname:", lastname);
   console.log("email:", email);
   console.log("city:", city);
   console.log("language:", language);
-
+  console.log("hashedPassword:", hashedPassword);  
     database
   
       .query(
   
-        "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
+        "INSERT INTO users(firstname, lastname, email, city, language , hashedPassword) VALUES (?, ?, ?, ?, ?, ?)",
   
-        [firstname, lastname, email, city, language]
+        [firstname, lastname, email, city, language, hashedPassword]
   
       )
   
@@ -122,15 +122,15 @@ const getUserById = (req, res) => {
   const editUser = (req, res) =>{
     const id = parseInt(req.params.id);
   
-    const { firstname, lastname, email, city, language } = req.body;
+    const { firstname, lastname, email, city, language, hashedPassword  } = req.body;
   
     database
   
       .query(
   
-        "update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ? where id = ?",
+        "update users set firstname = ?, lastname = ?, email = ?, city = ?, language = ?, hashedPassword= ? where id = ?",
   
-        [firstname, lastname, email, city, language, id]
+        [firstname, lastname, email, city, language, hashedPassword, id ]
   
       )
   
